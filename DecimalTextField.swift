@@ -60,12 +60,17 @@ struct DecimalTextField: View {
                     cleaned = cleaned.replacingOccurrences(of: "-", with: "")
                 }
                 
-                // 5. APPLY
+                // ---- 5. PREVENT FULL ERASE ON INVALID INPUT ----
+                if cleaned.isEmpty && !newText.isEmpty {
+                    text = formatter.string(from: NSNumber(value: value)) ?? "0"
+                    return
+                }
+                // 6. APPLY
                 if cleaned != newText {
                     text = cleaned
                 }
                 
-                // 6. PARSE (allow partial)
+                // 7. PARSE (allow partial)
                 if let number = formatter.number(from: cleaned)?.doubleValue {
                     value = number
                 }
@@ -155,4 +160,3 @@ struct ContentView: View {
         Text("Total: \(numberFormatComma.string(from: NSNumber(value: cost * amount)) ?? String(format: "%.2f", cost))").font(.title3)
     }
 }
-
